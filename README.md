@@ -17,7 +17,13 @@ project/
    └─ fall_detection.py     # YOLOv8 + MediaPipe 跌倒判斷
 
 ---
-
+| 元件 | 腳本 | 描述 |
+|------|------|------|
+| **Raspberry Pi** | `sender.py` | 壓縮 MJPEG → 串流至 VM |
+| | `audio_client.py` | 錄音 → `/upload_audio`；下載 TTS ↘ 播放；輪詢 `/tts_text` 顯示字幕 |
+| **Ubuntu VM** | `audio_api.py` | `faster-whisper` STT → `FastSpeech2` TTS；文字清洗＋語言偵測；字幕 API |
+| | `backend_server.py` | 接收影像 → `fall_detection.py` 混合 YOLOv8 + MediaPipe 判斷跌倒 |
+---
 ## 功能清單
 - **影像串流**：Pi 端攝影機 → Socket → Flask `/video_feed`
 - **跌倒偵測**：YOLOv8n + MediaPipe Pose，滑動窗口平滑
