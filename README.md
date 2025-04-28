@@ -15,8 +15,9 @@ project/
    ├─ audio_api.py          # 語音 API（Whisper + FastSpeech2 + 字幕）
    ├─ backend_server.py     # 影像 Socket + Flask MJPEG
    └─ fall_detection.py     # YOLOv8 + MediaPipe 跌倒判斷
-ˋˋˋ
-ˋˋˋ
+
+---
+
 ## 功能清單
 - **影像串流**：Pi 端攝影機 → Socket → Flask `/video_feed`
 - **跌倒偵測**：YOLOv8n + MediaPipe Pose，滑動窗口平滑
@@ -28,5 +29,5 @@ project/
   5. Pi 播放 TTS 並列印字幕
 - **字幕 API**：`GET /tts_text` 取最新回應文字
 - **視覺化日誌**：`tts_logs.jsonl` 一行一筆 JSON，含時間 / 成功 / 合成秒數
-ˋˋˋ
+
 ---
