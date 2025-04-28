@@ -19,8 +19,10 @@ project/
 ---
 | 元件 | 腳本 | 描述 |
 |------|------|------|
+
 | **Raspberry Pi** | `sender.py` | 壓縮 MJPEG → 串流至 VM |
 | | `audio_client.py` | 錄音 → `/upload_audio`；下載 TTS ↘ 播放；輪詢 `/tts_text` 顯示字幕 |
+
 | **Ubuntu VM** | `audio_api.py` | `faster-whisper` STT → `FastSpeech2` TTS；文字清洗＋語言偵測；字幕 API |
 | | `backend_server.py` | 接收影像 → `fall_detection.py` 混合 YOLOv8 + MediaPipe 判斷跌倒 |
 ---
