@@ -1,35 +1,32 @@
-# 跌倒偵測＋語音對話整合系統
+# Raspberry Pi ↔ Ubuntu VM 語音 + 跌倒偵測系統
 
-> **硬體**：Raspberry Pi 4B、Logitech C270（含 USB 麥克風）  
-> **後端**：Ubuntu 22.04 虛擬機（Xeon E5 CPU-only）  
-> **網路**：Tailscale 私有 VPN
-
----
-
-## 目錄
-1. [系統架構](#系統架構)
-2. [目錄結構](#目錄結構)
-3. [先決套件](#先決套件)
-4. [安裝步驟](#安裝步驟)
-5. [執行方式](#執行方式)
-6. [API 端點](#api-端點)
-7. [常見問題](#常見問題)
-
----
-
-## 系統架構
-
-
-| 區域 | 角色 | 主要腳本 | 功能 |
-|------|------|---------|------|
-| Raspberry Pi | `sender.py` | 透過 socket 傳送 C270 影像幀 |
-| | `audio_client.py` | 錄音→上傳→接收 TTS→喇叭播放＋字幕列印 |
-| Ubuntu VM | `backend_server.py` | 接收影像→`fall_detection.py` 判斷跌倒 |
-| | `fall_detection.py` | YOLO v8 + MediaPipe Pose 計算跌倒分數 |
-| | `audio_api.py` | Whisper STT → FastSpeech 2 TTS<br>文字清洗、語言偵測、備援音檔、字幕 API |
-
----
+> - **Edge**：Raspberry Pi 4B  
+> - **Backend**：Ubuntu VM (CPU-only, Xeon E5)  
+> - **Network**：Tailscale VPN
 
 ## 目錄結構
 
+```text
+project/
+├─ pi/                      # Raspberry Pi
+│  ├─ sender.py             # 影像送出
+│  └─ audio_client.py       # 錄音→上傳→播放→顯示字幕
+└─ server/                  # Ubuntu VM
+   ├─ audio_api.py          # 語音 API（Whisper + FastSpeech2 + 字幕）
+   ├─ backend_server.py     # 影像 Socket + Flask MJPEG
+   └─ fall_detection.py     # YOLOv8 + MediaPipe 跌倒判斷
 
+
+## 功能清單
+- **影像串流**：Pi 端攝影機 → Socket → Flask `/video_feed`
+- **跌倒偵測**：YOLOv8n + MediaPipe Pose，滑動窗口平滑
+- **語音回路**  
+  1. Pi 錄音 5 s  
+  2. Ubuntu `faster-whisper` 辨識  
+  3. 固定/LLM 回應文字 → **文字清洗**  
+  4. 中、英以外直接備援；中文走 **FastSpeech2** 合成  
+  5. Pi 播放 TTS 並列印字幕
+- **字幕 API**：`GET /tts_text` 取最新回應文字
+- **視覺化日誌**：`tts_logs.jsonl` 一行一筆 JSON，含時間 / 成功 / 合成秒數
+
+---
