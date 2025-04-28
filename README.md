@@ -15,7 +15,7 @@ project/
    ├─ audio_api.py          # 語音 API（Whisper + FastSpeech2 + 字幕）
    ├─ backend_server.py     # 影像 Socket + Flask MJPEG
    └─ fall_detection.py     # YOLOv8 + MediaPipe 跌倒判斷
-
+ˋˋˋ
 
 ## 功能清單
 - **影像串流**：Pi 端攝影機 → Socket → Flask `/video_feed`
